@@ -9,8 +9,7 @@ app = Flask(__name__)
 @app.get('/products')
 def allproducts():
     ...
-    print(f'{request.args=}')
-    return jsonify(data)
+    return jsonify(data), HTTPStatus.OK
 
 
 @app.get('/products/<product_id>')

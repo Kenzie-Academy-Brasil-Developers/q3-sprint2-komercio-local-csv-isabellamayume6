@@ -8,8 +8,8 @@ f = open(path, 'r')
 reader = csv.DictReader(f)
 
 for line in reader:
-    line["id"] = int(line["id"])
-    line["price"] = float(line["price"])
+    line['id'] = int(line['id'])
+    line['price'] = float(line['price'])
     data.append(line)
 
 f.close()
@@ -23,8 +23,8 @@ def read_id(product_id):
     with open(path, 'r') as arquivo_csv:
         new_arquivo = csv.DictReader(arquivo_csv)
         for product in new_arquivo:
-            if product["id"] == product_id:
-                product["id"] = int(product["id"])
+            if product['id'] == product_id:
+                product['id'] = int(product['id'])
                 f.close()
                 return product
 
@@ -38,11 +38,11 @@ def add_product(name, price):
     path = getenv('FILEPATH')
     fieldnames = ['id', 'name', 'price']
     new_id_product = data[-1]['id'] + 1
-    payload = {'id': new_id_product, 'name': name, 'price': float(price)}
+    new_product = {'id': new_id_product, 'name': name, 'price': float(price)}
     f = open(path, 'a')
     writer = csv.DictWriter(f, fieldnames=fieldnames)
-    writer.writerow(payload)
+    writer.writerow(new_product)
     f.close()
-    data.append(payload)
+    data.append(new_product)
 
-    return payload
+    return new_product

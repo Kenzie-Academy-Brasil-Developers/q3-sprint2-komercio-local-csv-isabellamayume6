@@ -1,13 +1,11 @@
 id,name,price
-1,sabonete,5.99
-2,perfume,39.9
 3,tapete,10.3
 4,tunica,19.29
 5,chuveiro,119.19
 6,arroz,30.1
 7,oleo de cozinha,11.15
 8,carne moida,39.9
-9,bola,25.99
+9,bola,25.9
 10,cantil,55.99
 11,copo,5.99
 12,panela,25.99
@@ -35,3 +33,4 @@ id,name,price
 34,esponja patrick,5.49
 35,esponja sirigueijo,5.49
 36,esponja sirigueijo2,5.49
+37,esponja teste,5.49

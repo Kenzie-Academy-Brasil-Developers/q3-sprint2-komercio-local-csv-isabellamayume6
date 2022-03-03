@@ -25,10 +25,8 @@ def read_id(product_id):
         for product in new_arquivo:
             if product['id'] == product_id:
                 product['id'] = int(product['id'])
-                f.close()
                 return product
 
-    f.close()
     return 'Not Found'
 
 # criando outro produto
@@ -46,3 +44,37 @@ def add_product(name, price):
     data.append(new_product)
 
     return new_product
+
+# editando o item
+
+# deletando o produto
+
+
+def delete_product(product_id):
+    print(product_id)
+    path = getenv('FILEPATH')
+    g = open(path, 'r')
+    read = csv.DictReader(g)
+    result = []
+
+    for line in read:
+        result.append(line)
+
+    fieldnames = ['id', 'name', 'price']
+    f = open(path, 'w')
+    write = csv.DictWriter(f, fieldnames=fieldnames)
+
+    write.writeheader()
+
+    data_without_id_deleted = {}
+    for line in result:
+        print(line)
+        if int(line['id']) == product_id:
+            data_without_id_deleted = line
+        else:
+            print('aqui')
+            write.writerow(line)
+    f.close()
+    if data_without_id_deleted:
+        return data_without_id_deleted
+    return 'Not Found'

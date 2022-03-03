@@ -1,7 +1,7 @@
 from http.client import NOT_FOUND
 from flask import Flask, jsonify, request
 from http import HTTPStatus
-from .products import data, read_id, add_product
+from .products import data, delete_product, read_id, add_product, delete_product
 
 app = Flask(__name__)
 
@@ -35,5 +35,14 @@ def create_product():
 
     if missing or (name == None or price == None):
         return {'error': 'missing  name or price'}, HTTPStatus.BAD_REQUEST
-
     return add_product(name, price), HTTPStatus.CREATED
+
+
+@app.delete('/products/<int:product_id>')
+def delete_products(product_id):
+    args = delete_product(product_id)
+
+    if args == 'Not Found':
+        return {'error': 'product not found'}, HTTPStatus.BAD_REQUEST
+
+    return jsonify(args), HTTPStatus.OK

@@ -1,7 +1,7 @@
 from http.client import NOT_FOUND
 from flask import Flask, jsonify, request
 from http import HTTPStatus
-from .products import data, delete_product, read_id, add_product, delete_product
+from .products import delete_product, read_all_products, read_id, add_product
 
 app = Flask(__name__)
 
@@ -9,6 +9,7 @@ app = Flask(__name__)
 @app.get('/products')
 def allproducts():
     ...
+    data = read_all_products()
     return jsonify(data), HTTPStatus.OK
 
 

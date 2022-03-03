@@ -1,4 +1,6 @@
 id,name,price
+1,sabonete,5.99
+2,perfume,39.9
 3,tapete,10.3
 4,tunica,19.29
 5,chuveiro,119.19
@@ -28,10 +30,6 @@ id,name,price
 29,coberta,55.99
 30,sofa,600.15
 31,esponja,5.59
-32,esponja2,5.49
 33,esponja bob esponja,5.49
 34,esponja patrick,5.49
 35,esponja sirigueijo,5.49
-36,esponja sirigueijo2,5.49
-37,esponja teste,5.49
-38,perfume,39.9

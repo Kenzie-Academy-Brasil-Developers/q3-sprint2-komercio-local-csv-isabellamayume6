@@ -3,16 +3,20 @@ import csv
 
 # listando os produtos do csv
 path = getenv('FILEPATH')
-data = []
-f = open(path, 'r')
-reader = csv.DictReader(f)
 
-for line in reader:
-    line['id'] = int(line['id'])
-    line['price'] = float(line['price'])
-    data.append(line)
 
-f.close()
+def read_all_products():
+    data = []
+    f = open(path, 'r')
+    reader = csv.DictReader(f)
+
+    for line in reader:
+        line['id'] = int(line['id'])
+        line['price'] = float(line['price'])
+        data.append(line)
+
+    f.close()
+    return data
 
 # lendo o id e comparando para retornar
 
@@ -35,6 +39,16 @@ def read_id(product_id):
 def add_product(name, price):
     path = getenv('FILEPATH')
     fieldnames = ['id', 'name', 'price']
+    data = []
+    f = open(path, 'r')
+    reader = csv.DictReader(f)
+
+    for line in reader:
+        line['id'] = int(line['id'])
+        line['price'] = float(line['price'])
+        data.append(line)
+
+    f.close()
     new_id_product = data[-1]['id'] + 1
     new_product = {'id': new_id_product, 'name': name, 'price': float(price)}
     f = open(path, 'a')
@@ -68,11 +82,12 @@ def delete_product(product_id):
 
     data_without_id_deleted = {}
     for line in result:
-        print(line)
         if int(line['id']) == product_id:
+            for line in result:
+                line['id'] = int(line['id'])
+                line['price'] = float(line['price'])
             data_without_id_deleted = line
         else:
-            print('aqui')
             write.writerow(line)
     f.close()
     if data_without_id_deleted:

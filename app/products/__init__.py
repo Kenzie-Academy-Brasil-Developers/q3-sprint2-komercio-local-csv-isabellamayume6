@@ -28,7 +28,7 @@ def read_all_products(page, per_page):
     print(result_data)
     return result_data
 
-# lendo o id e comparando para retornar
+# lendo o id e comparando para retornar:
 
 
 def read_id(product_id):

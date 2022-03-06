@@ -9,7 +9,14 @@ app = Flask(__name__)
 @app.get('/products')
 def allproducts():
     ...
-    data = read_all_products()
+    args = list(dict(request.args.items()).values())
+    page = 0
+    per_page = 0
+    if args:
+        [page, per_page] = args
+    data = read_all_products(page, per_page)
+    print(page, per_page)
+
     return jsonify(data), HTTPStatus.OK
 
 

@@ -1,22 +1,32 @@
+from http import HTTPStatus
 from os import getenv
 import csv
+
+from flask import jsonify
 
 # listando os produtos do csv
 path = getenv('FILEPATH')
 
 
-def read_all_products():
+def read_all_products(page, per_page):
     data = []
     f = open(path, 'r')
     reader = csv.DictReader(f)
-
     for line in reader:
         line['id'] = int(line['id'])
         line['price'] = float(line['price'])
         data.append(line)
+        result_data = []
+    if page and per_page:
+        page = int(page)
+        per_page = int(per_page)
 
-    f.close()
-    return data
+        result_data = data[page:(per_page+page)]
+    else:
+        result_data = data[0:3]
+        f.close()
+    print(result_data)
+    return result_data
 
 # lendo o id e comparando para retornar
 
@@ -29,6 +39,8 @@ def read_id(product_id):
         for product in new_arquivo:
             if product['id'] == product_id:
                 product['id'] = int(product['id'])
+                product['price'] = float(product['price'])
+
                 return product
 
     return 'Not Found'
@@ -65,7 +77,6 @@ def add_product(name, price):
 
 
 def delete_product(product_id):
-    print(product_id)
     path = getenv('FILEPATH')
     g = open(path, 'r')
     read = csv.DictReader(g)
@@ -80,16 +91,20 @@ def delete_product(product_id):
 
     write.writeheader()
 
-    data_without_id_deleted = {}
-    for line in result:
-        if int(line['id']) == product_id:
-            for line in result:
-                line['id'] = int(line['id'])
-                line['price'] = float(line['price'])
-            data_without_id_deleted = line
+    data_without_id_deleted = []
+    for lines in result:
+        if int(lines['id']) == product_id:
+            data_without_id_deleted.append(lines)
         else:
-            write.writerow(line)
+            write.writerow(lines)
     f.close()
     if data_without_id_deleted:
-        return data_without_id_deleted
+        print(data_without_id_deleted)
+        result_data = {}
+        for line in data_without_id_deleted:
+            line['id'] = int(line['id'])
+            line['price'] = float(line['price'])
+            result_data = line
+        print(result_data)
+        return result_data
     return 'Not Found'

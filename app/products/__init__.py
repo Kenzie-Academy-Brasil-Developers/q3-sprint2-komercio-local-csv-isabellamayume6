@@ -2,9 +2,7 @@ from http import HTTPStatus
 from os import getenv
 import csv
 
-from flask import jsonify
-
-# listando os produtos do csv
+from flask import jsonify, request
 path = getenv('FILEPATH')
 
 
@@ -17,6 +15,7 @@ def read_all_products(page, per_page):
         line['price'] = float(line['price'])
         data.append(line)
         result_data = []
+
     if page and per_page:
         page = int(page)
         per_page = int(per_page)
@@ -25,10 +24,7 @@ def read_all_products(page, per_page):
     else:
         result_data = data[0:3]
         f.close()
-    print(result_data)
     return result_data
-
-# lendo o id e comparando para retornar:
 
 
 def read_id(product_id):
@@ -41,14 +37,12 @@ def read_id(product_id):
                 product['id'] = int(product['id'])
                 product['price'] = float(product['price'])
 
-                return product
+                return jsonify(product), HTTPStatus.OK
 
-    return 'Not Found'
-
-# criando outro produto
+    return {"error": f"product {product_id} not found"}, HTTPStatus.NOT_FOUND
 
 
-def add_product(name, price):
+def add_product():
     path = getenv('FILEPATH')
     fieldnames = ['id', 'name', 'price']
     data = []
@@ -61,6 +55,17 @@ def add_product(name, price):
         data.append(line)
 
     f.close()
+    new_data = request.get_json()
+
+    expected = {'name', 'price'}
+    received = set(new_data.keys())
+    missing = received - expected
+
+    name = new_data.get('name')
+    price = new_data.get('price')
+
+    if missing or (name == None or price == None):
+        return {'error': 'missing  name or price'}, HTTPStatus.BAD_REQUEST
     new_id_product = data[-1]['id'] + 1
     new_product = {'id': new_id_product, 'name': name, 'price': float(price)}
     f = open(path, 'a')
@@ -69,11 +74,37 @@ def add_product(name, price):
     f.close()
     data.append(new_product)
 
-    return new_product
+    return new_product, HTTPStatus.CREATED
 
-# editando o item
 
-# deletando o produto
+def update_product_id(product_id):
+    ...
+    path = getenv('FILEPATH')
+    g = open(path, 'r')
+    read = csv.DictReader(g)
+    result = []
+    data_update = request.get_json()
+    name_update = data_update.get("name")
+    price_update = data_update.get("price")
+    for line in read:
+        result.append(line)
+    fieldnames = ['id', 'name', 'price']
+    f = open(path, 'w')
+    write = csv.DictWriter(f, fieldnames=fieldnames)
+    write.writeheader()
+    data_would_be_updated = {}
+    for lines in result:
+        if int(lines['id']) == product_id:
+            data_would_be_updated = lines
+        else:
+            write.writerow(lines)
+    if data_would_be_updated:
+        data_would_be_updated['name'] = name_update
+        data_would_be_updated['price'] = float(price_update)
+        write.writerow(data_would_be_updated)
+        return jsonify(data_would_be_updated), HTTPStatus.OK
+    f.close()
+    return {"error": f"product {product_id} not found"}, HTTPStatus.NOT_FOUND
 
 
 def delete_product(product_id):
@@ -99,12 +130,10 @@ def delete_product(product_id):
             write.writerow(lines)
     f.close()
     if data_without_id_deleted:
-        print(data_without_id_deleted)
         result_data = {}
         for line in data_without_id_deleted:
             line['id'] = int(line['id'])
             line['price'] = float(line['price'])
             result_data = line
-        print(result_data)
-        return result_data
-    return 'Not Found'
+        return jsonify(result_data), HTTPStatus.OK
+    return {"error": f"product {product_id} not found"}, HTTPStatus.NOT_FOUND
